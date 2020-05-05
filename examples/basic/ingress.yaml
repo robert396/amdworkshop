@@ -9,10 +9,10 @@ metadata:
     app.kubernetes.io/instance: amd-wks-hello-basic
     app.kubernetes.io/name: amd-wks-hello
   name: amd-wks-hello-basic
-  namespace: robert
+  namespace: default
 spec:
   rules:
-  - host: 'robert-wks.quartex.uk'
+  - host: 'amd-wks.quartex.uk'
     http:
       paths:
       - backend:

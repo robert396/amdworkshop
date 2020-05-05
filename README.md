@@ -129,3 +129,138 @@ For example if I wanted to always query the QA resources by default in the `dev`
 ```sh
 kubens qa
 ```
+
+## Examples
+
+Within the `examples/` directory there are two deployment configurations for a `hello world` application.
+
+The first example called `basic`, uses the standard Kubernetes manifest `yaml` files.
+
+The second example called `hello-world-chart` is a Helm chart, which builds the manifest files from templates.
+
+### Basic
+
+In the basic example located at `examples/basic` you will find three files.
+
+```
+deployment.yaml
+ingress.yaml
+service.yaml
+```
+
+The manifest files as they are can be used to deploy the app into the `default` namespace and expose it on https://amd-wks.quartex.uk, but we don't want to do that.
+
+For this example we are going to look at creating a new `namespace`, changing the `hostname` for the app, and then deploying.
+
+Step 1. Create the new namespace
+
+Creating a new namespace to deploy resources to in a kubernetes cluster is quite simple, just a single command.
+
+NOTE: The namespace name must be in lowercase.
+
+```sh
+kubectl create namespace <name>
+```
+
+To check that the namespace was created successfully you can get a list of namespaces in the cluster by calling:
+
+```sh
+kubectl get namespaces
+```
+
+Step 2. Updating the Manifest files
+
+The first file we are going to change is the `deployment.yaml` file, open it and find line `8`.
+
+Change the value of the namespace to the one we created in step 1, and then save the file.
+
+```yaml
+namespace: <name>
+```
+
+Next we are going to edit the `ingress.yaml` file, open it and change the namespace on line `12` and then locate line `19`.
+
+Here we are going to change out the `host` from `amd-wks.quartex.uk` to a more personal one.
+
+NOTE: Do not use a hostname that matches a currently deployed `front-end` application and it must end in `quartex.uk`, so use something completely unique like `john-wks.quartex.uk` 
+
+```yaml
+  - host: '<name>.quartex.uk'
+```
+
+And finally we are going to open the `service.yaml` file and change the namespace on line `8`.
+
+Step 3. Applying the manifests
+
+In order for the cluster to have any idea of our resources, we actually need to apply the files. With Kubernetes this can be done all at once or singularly by using the `apply` sub-command.
+
+One by One:
+
+```sh
+kubectl apply -f ./deployment.yaml
+kubectl apply -f ./ingress.yaml
+kubectl apply -f ./service.yaml
+```
+
+All at once (applies all yaml files in the directory):
+
+```sh
+kubectl apply -f ./
+```
+
+#### Clean Up
+
+Deleting any created resources via the manifest files is as simple as running the `delete` sub-command instead of `apply`
+
+One by One:
+
+```sh
+kubectl delete -f ./deployment.yaml
+kubectl delete -f ./ingress.yaml
+kubectl delete -f ./service.yaml
+```
+
+All at once (deletes all resources based on yaml files in the directory):
+
+```sh
+kubectl delete -f ./
+```
+
+### Helm Chart
+
+Deploying the helm chart is quite a bit easier, as all the necessary files are templated, we just need to create a single yaml file with some of the necessary information.
+
+```yaml
+ingress:
+  hosts:
+    - host: john-wks.quartex.uk
+      paths: ['/']
+```
+
+Save this yaml into a file somewhere that you can access, as we are going to be using it in just a moment.
+
+For reference my file is saved at the root of this repo (where the README.md file is located) with a name of `values.yaml`
+
+So to install this chart we are going to run the following command:
+
+NOTE: The `releaseName` must be unique for this release, if you use a pre-existing name then it will be rejected, so use something similar to the host name like `john-wks`
+
+```sh
+helm install --name <releaseName> ./examples/hello-world-chart -f values.yaml --namespace <yourNamespace>
+```
+
+This will compile the necessary manifest templates using the supplied values, and the chart default values and apply those manifests against the cluster to create those resources.
+
+To update an existing release use the following:
+
+```sh
+helm upgrade <releaseName> ./examples/hello-world-chart -f values.yaml
+```
+
+#### Clean Up
+
+Deleting a release from Helm is quite nice and simple:
+
+```sh
+helm delete --purge <releaseName>
+```

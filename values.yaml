@@ -1,0 +1,10 @@
+ingress:
+  hosts:
+    - host: robert-wks.quartex.uk
+      paths: ['/']
+
+additonalEnvVars:
+  - name: isAlive
+    value: 'true'
+  - name: isReady
+    value: 'true'

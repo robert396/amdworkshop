@@ -1,0 +1,45 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+image:
+  repository: robert396/amd-wks-hello
+  tag: v2
+  pullPolicy: Always
+
+resources: 
+  limits:
+    cpu: 100m
+    memory: 100Mi
+  requests:
+    cpu: 1m
+    memory: 10Mi
+
+environment:
+  - name: node
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: pod
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: PORT
+    value: "3000"
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: quartex-uk
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: amd-wks.quartex.uk
+      paths: ["/"]
+
+
+

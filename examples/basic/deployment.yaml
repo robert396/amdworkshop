@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/instance: amd-wks-hello-basic
     app.kubernetes.io/name: amd-wks-hello
   name: amd-wks-hello-basic
-  namespace: robert
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -65,5 +65,3 @@ spec:
                 fieldPath: metadata.name
           - name: PORT
             value: "3000"
-          - name: isAlive
-            value: "false"

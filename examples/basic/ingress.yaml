@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: quartex-uk
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  labels:
+    app.kubernetes.io/instance: amd-wks-hello-basic
+    app.kubernetes.io/name: amd-wks-hello
+  name: amd-wks-hello-basic
+  namespace: robert
+spec:
+  rules:
+  - host: 'robert-wks.quartex.uk'
+    http:
+      paths:
+      - backend:
+          serviceName: amd-wks-hello-basic
+          servicePort: http
+        path: /

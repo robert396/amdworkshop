@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: amd-wks-hello-basic
+    app.kubernetes.io/name: amd-wks-hello
+  name: amd-wks-hello-basic
+  namespace: robert
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/instance: amd-wks-hello-basic
+    app.kubernetes.io/name: amd-wks-hello
+  type: ClusterIP

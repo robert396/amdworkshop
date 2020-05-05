@@ -55,11 +55,23 @@ fastify.get('/healthz', { logLevel: 'trace' }, (req, reply) => {
 });
 
 fastify.get('/health/live', (req, reply) => {
-    return reply.code(200).header('Content-Type', 'application/json; chartset=utf-8').send({ "Healthy": fastify.config.isAlive });
+    let statusCode = 200;
+
+    if (!fastify.config.isAlive) {
+        statusCode = 500;
+    }
+
+    return reply.code(statusCode).header('Content-Type', 'application/json; chartset=utf-8').send({ "Healthy": fastify.config.isAlive });
 });
 
 fastify.get('/health/ready', (req, reply) => {
-    return reply.code(200).header('Content-Type', 'application/json; chartset=utf-8').send({ "Healthy": fastify.config.isReady });
+    let statusCode = 200;
+
+    if (!fastify.config.isReady) {
+        statusCode = 500;
+    }
+
+    return reply.code(statusCode).header('Content-Type', 'application/json; chartset=utf-8').send({ "Healthy": fastify.config.isReady });
 });
 
 const bootstrap = async () => {

@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: amd-wks-hello
-        image: robert396/amd-wks-hello:latest
+        image: robert396/amd-wks-hello:v2
         imagePullPolicy: Always
         ports:
           - containerPort: 3000
